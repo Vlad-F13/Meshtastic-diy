@@ -26,7 +26,7 @@ class AmbientLightingThread : public concurrency::OSThread
         notifyDeepSleepObserver.observe(&notifyDeepSleep); // Let us know when shutdown() is issued.
 
 // Enables Ambient Lighting by default if conditions are meet.
-#if defined(HAS_NCP5623) || defined(RGBLED_RED) || defined(HAS_NEOPIXEL) || defined(UNPHONE)
+#if defined(HAS_NCP5623) || defined(HAS_RGBLED) || defined(HAS_NEOPIXEL) || defined(UNPHONE)
 #ifdef ENABLE_AMBIENTLIGHTING
         moduleConfig.ambient_lighting.led_state = true;
 #endif
@@ -47,7 +47,7 @@ class AmbientLightingThread : public concurrency::OSThread
             return;
         }
 #endif
-#if defined(HAS_NCP5623) || defined(RGBLED_RED) || defined(HAS_NEOPIXEL) || defined(UNPHONE)
+#if defined(HAS_NCP5623) || defined(HAS_RGBLED) || defined(HAS_NEOPIXEL) || defined(UNPHONE)
         if (!moduleConfig.ambient_lighting.led_state) {
             LOG_DEBUG("AmbientLighting Disable due to moduleConfig.ambient_lighting.led_state OFF");
             disable();
@@ -58,7 +58,7 @@ class AmbientLightingThread : public concurrency::OSThread
         if (_type == ScanI2C::NCP5623) {
             rgb.begin();
 #endif
-#ifdef RGBLED_RED
+#ifdef HAS_RGBLED
             pinMode(RGBLED_RED, OUTPUT);
             pinMode(RGBLED_GREEN, OUTPUT);
             pinMode(RGBLED_BLUE, OUTPUT);
@@ -78,7 +78,7 @@ class AmbientLightingThread : public concurrency::OSThread
   protected:
     int32_t runOnce() override
     {
-#if defined(HAS_NCP5623) || defined(RGBLED_RED) || defined(HAS_NEOPIXEL) || defined(UNPHONE)
+#if defined(HAS_NCP5623) || defined(HAS_RGBLED) || defined(HAS_NEOPIXEL) || defined(UNPHONE)
 #ifdef HAS_NCP5623
         if (_type == ScanI2C::NCP5623 && moduleConfig.ambient_lighting.led_state) {
 #endif
@@ -118,7 +118,7 @@ class AmbientLightingThread : public concurrency::OSThread
         analogWrite(RGBLED_GREEN, 255 - 0);
         analogWrite(RGBLED_BLUE, 255 - 0);
         LOG_INFO("OFF: Ambient light RGB Common Anode");
-#elif defined(RGBLED_RED)
+#elif defined(RGBLED_CC)
         analogWrite(RGBLED_RED, 0);
         analogWrite(RGBLED_GREEN, 0);
         analogWrite(RGBLED_BLUE, 0);
@@ -167,7 +167,7 @@ class AmbientLightingThread : public concurrency::OSThread
         analogWrite(RGBLED_BLUE, 255 - moduleConfig.ambient_lighting.blue);
         LOG_DEBUG("Init Ambient light RGB Common Anode w/ red=%d, green=%d, blue=%d", moduleConfig.ambient_lighting.red,
                   moduleConfig.ambient_lighting.green, moduleConfig.ambient_lighting.blue);
-#elif defined(RGBLED_RED)
+#elif defined(RGBLED_CC)
         analogWrite(RGBLED_RED, moduleConfig.ambient_lighting.red);
         analogWrite(RGBLED_GREEN, moduleConfig.ambient_lighting.green);
         analogWrite(RGBLED_BLUE, moduleConfig.ambient_lighting.blue);
